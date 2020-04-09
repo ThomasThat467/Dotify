@@ -14,12 +14,12 @@
         android:text="No User"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/button"
+        app:layout_constraintBottom_toBottomOf="@+id/userButton"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/button" />
+        app:layout_constraintTop_toTopOf="@+id/userButton" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/userButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="changeUser"
@@ -29,91 +29,93 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/albumCover"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button"
+        app:layout_constraintTop_toBottomOf="@+id/userButton"
         app:srcCompat="@drawable/strangers_cover_art" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Strangers"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textColor="#000000"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+        app:layout_constraintTop_toBottomOf="@+id/albumCover" />
 
     <TextView
-        android:id="@+id/textView2"
-        android:layout_width="379dp"
-        android:layout_height="0dp"
+        android:id="@+id/artists"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
         android:text="Seven Lions featuring Tove Lo, Myon, Shane 54"
         android:textColor="#000000"
-        android:textSize="20sp"
+        android:textSize="19sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/title" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/playCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="# Plays"
         android:textColor="#000000"
-        android:textSize="20sp"
+        android:textSize="19sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/artists" />
 
     <ImageButton
-        android:id="@+id/imageButton3"
+        android:id="@+id/playButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:backgroundTint="#00FFFFFF"
+        android:background="@android:color/transparent"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:onClick="incrementUp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/imageButton4"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/imageButton2"
-        app:layout_constraintTop_toBottomOf="@+id/textView3"
-        app:layout_constraintVertical_bias="0.055"
+        app:layout_constraintEnd_toStartOf="@+id/nextButton"
+        app:layout_constraintStart_toEndOf="@+id/prevButton"
+        app:layout_constraintTop_toBottomOf="@+id/playCount"
         app:srcCompat="@drawable/ic_play" />
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/prevButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="#00FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/imageButton3"
-        app:layout_constraintEnd_toStartOf="@+id/imageButton3"
+        android:background="@android:color/transparent"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:onClick="prevClick"
+        app:layout_constraintBottom_toBottomOf="@+id/playButton"
+        app:layout_constraintEnd_toStartOf="@+id/playButton"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageButton3"
+        app:layout_constraintTop_toTopOf="@+id/playButton"
         app:srcCompat="@drawable/ic_previous" />
 
     <ImageButton
-        android:id="@+id/imageButton4"
+        android:id="@+id/nextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="#00FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/imageButton3"
+        android:background="@android:color/transparent"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:onClick="nextClick"
+        app:layout_constraintBottom_toBottomOf="@+id/playButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageButton3"
-        app:layout_constraintTop_toTopOf="@+id/imageButton3"
+        app:layout_constraintStart_toEndOf="@+id/playButton"
+        app:layout_constraintTop_toTopOf="@+id/playButton"
         app:srcCompat="@drawable/ic_next" />
 
     <EditText
@@ -123,8 +125,8 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/button"
+        app:layout_constraintBottom_toBottomOf="@+id/userButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/button" />
+        app:layout_constraintTop_toTopOf="@+id/userButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
