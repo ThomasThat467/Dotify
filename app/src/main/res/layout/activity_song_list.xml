@@ -9,21 +9,20 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/songList"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/miniPlayer"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/item_song" />
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar2"
+        android:id="@+id/miniPlayer"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:background="#FFFFFF"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
+        android:foreground="?android:attr/selectableItemBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -35,18 +34,23 @@
         android:layout_marginEnd="16dp"
         android:text="shuffle"
         android:elevation="5dp"
-        app:layout_constraintBottom_toBottomOf="@+id/toolbar2"
-        app:layout_constraintEnd_toEndOf="@+id/toolbar2"
-        app:layout_constraintTop_toTopOf="@+id/toolbar2" />
+        app:layout_constraintBottom_toBottomOf="@+id/miniPlayer"
+        app:layout_constraintEnd_toEndOf="@+id/miniPlayer"
+        app:layout_constraintTop_toTopOf="@+id/miniPlayer" />
 
     <TextView
         android:id="@+id/miniPlayerText"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="@+id/toolbar2"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/miniPlayer"
+        app:layout_constraintEnd_toStartOf="@+id/shuffleButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/toolbar2" />
+        app:layout_constraintTop_toTopOf="@+id/miniPlayer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

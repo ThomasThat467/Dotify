@@ -10,35 +10,39 @@ import com.ericchee.songdataprovider.Song
 import java.util.*
 
 class SongListAdapter(private val listOfSongs: List<Song>): RecyclerView.Adapter<SongListAdapter.SongViewHolder>() {
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): SongViewHolder {
+    private val listOfSongsCopy = listOfSongs.toList()
+    var onSongClickListener: ((song: Song) -> Unit)? = null
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_song, parent, false)
 
         return SongViewHolder(view)
     }
 
-    override fun getItemCount() = listOfSongs.size
+    override fun getItemCount() = listOfSongsCopy.size
 
     fun shuffleSongs() {
-        Collections.shuffle(listOfSongs)
+        Collections.shuffle(listOfSongsCopy)
     }
 
     override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
-        val songs = listOfSongs[position]
-        holder.bind(songs.smallImageID, songs.title, songs.artist)
+        val song = listOfSongsCopy[position]
+        holder.bind(song)
     }
 
-    class SongViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class SongViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         private val songAlbum = itemView.findViewById<ImageView>(R.id.albumImage)
         private val songName = itemView.findViewById<TextView>(R.id.songTitle)
         private val songArtist = itemView.findViewById<TextView>(R.id.artist)
 
-        fun bind(album: Int, name: String, artist: String) {
-            songAlbum.setImageResource(album)
-            songName.text = name
-            songArtist.text = artist
+        fun bind(song: Song) {
+            songAlbum.setImageResource(song.smallImageID)
+            songName.text = song.title
+            songArtist.text = song.artist
+
+            itemView.setOnClickListener {
+                onSongClickListener?.invoke(song)
+            }
         }
     }
 }

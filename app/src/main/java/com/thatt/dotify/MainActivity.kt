@@ -3,43 +3,48 @@ package com.thatt.dotify
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import android.widget.Toast
+import com.ericchee.songdataprovider.Song
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
-    var plays = 0
+    private var plays = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val song = intent.getParcelableExtra<Song>(SONG_KEY)
+        albumCover.setImageResource(song.largeImageID)
+        songTitle.text = song.title
+        artists.text = song.artist
         plays = Random.nextInt(1000, 1000000)
         playCount.text = getString(R.string.play_count, plays)
         var changedColor = false
+        userButton.setOnClickListener {
+            changeUser()
+        }
         albumCover.setOnLongClickListener() {
-            if (!changedColor) {
-                user.setTextColor(getColor(R.color.red))
-                editText.setTextColor(getColor(R.color.red))
-                userButton.setTextColor(getColor(R.color.red))
-                songTitle.setTextColor(getColor(R.color.red))
-                artists.setTextColor(getColor(R.color.red))
-                playCount.setTextColor(getColor(R.color.red))
-            } else {
-                user.setTextColor(getColor(R.color.black))
-                editText.setTextColor(getColor(R.color.black))
-                userButton.setTextColor(getColor(R.color.black))
-                songTitle.setTextColor(getColor(R.color.black))
-                artists.setTextColor(getColor(R.color.black))
-                playCount.setTextColor(getColor(R.color.black))
-            }
+            changeColor(changedColor)
             changedColor = !changedColor
             return@setOnLongClickListener true
         }
+        playButton.setOnClickListener {
+            incrementUp()
+        }
+        nextButton.setOnClickListener {
+            skipTrack("next")
+        }
+        prevButton.setOnClickListener {
+            skipTrack("previous")
+        }
     }
 
-    fun changeUser(view: View) {
+    companion object {
+        const val SONG_KEY = "SELECTED_SONG"
+    }
+
+    private fun changeUser() {
         if (userButton.text == getString(R.string.change_button)) {
             user.visibility = View.GONE
             userButton.text = getString(R.string.apply_button)
@@ -55,16 +60,32 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun incrementUp(view: View) {
+    private fun changeColor(changedColor: Boolean) {
+        if (!changedColor) {
+            val colorRed = getColor(R.color.red)
+            user.setTextColor(colorRed)
+            editText.setTextColor(colorRed)
+            userButton.setTextColor(colorRed)
+            songTitle.setTextColor(colorRed)
+            artists.setTextColor(colorRed)
+            playCount.setTextColor(colorRed)
+        } else {
+            val colorBlack = getColor(R.color.black)
+            user.setTextColor(colorBlack)
+            editText.setTextColor(colorBlack)
+            userButton.setTextColor(colorBlack)
+            songTitle.setTextColor(colorBlack)
+            artists.setTextColor(colorBlack)
+            playCount.setTextColor(colorBlack)
+        }
+    }
+
+    private fun incrementUp() {
         plays++
         playCount.text = getString(R.string.play_count, plays)
     }
 
-    fun nextClick(view: View) {
-        Toast.makeText(applicationContext, getString(R.string.next_track), Toast.LENGTH_SHORT).show()
-    }
-
-    fun prevClick(view: View) {
-        Toast.makeText(applicationContext, getString(R.string.prev_track), Toast.LENGTH_SHORT).show()
+    private fun skipTrack(track: String) {
+        Toast.makeText(applicationContext, getString(R.string.skip_track, track), Toast.LENGTH_SHORT).show()
     }
 }

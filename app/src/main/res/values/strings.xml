@@ -2,16 +2,15 @@
     <string name="app_name">Dotify</string>
     <string name="default_user">No User</string>
     <string name="autofill_hint">Username</string>
-    <string name="change_button">CHANGE USER</string>
-    <string name="album_desc">Album Cover for Strangers</string>
-    <string name="apply_button">APPLY</string>
+    <string name="change_button">Change User</string>
+    <string name="album_desc">Album Cover</string>
+    <string name="apply_button">Apply</string>
     <string name="username_error">Invalid Username</string>
     <string name="play_count">%1$d plays</string>
-    <string name="next_track">Skipping to next track</string>
     <string name="next_desc">Next Track Button</string>
-    <string name="prev_track">Skipping to previous track</string>
     <string name="prev_desc">Previous Track Button</string>
+    <string name="skip_track">Skipping to %s track</string>
     <string name="play_desc">Play Button</string>
-    <string name="song_title">Strangers</string>
-    <string name="artist_names">Seven Lions featuring Tove Lo, Myon, Shane 54</string>
+    <string name="default_title">Strangers</string>
+    <string name="default_artist">Seven Lions featuring Tove Lo, Myon, Shane 54</string>
 </resources>
