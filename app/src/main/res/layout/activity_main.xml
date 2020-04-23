@@ -9,14 +9,15 @@
 
     <TextView
         android:id="@+id/user"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/default_user"
-        android:textColor="@color/black"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/black"
         android:textSize="@dimen/textSmall"
         app:layout_constraintBottom_toBottomOf="@+id/userButton"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/userButton"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/userButton" />
 
     <Button
@@ -24,7 +25,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/change_button"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@color/black"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -35,16 +35,15 @@
         android:layout_height="@dimen/noPadding"
         android:layout_marginTop="@dimen/paddingSmall"
         android:contentDescription="@string/album_desc"
-        android:longClickable="true"
         app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/nextButton"
+        app:layout_constraintStart_toStartOf="@+id/prevButton"
         app:layout_constraintTop_toBottomOf="@+id/userButton"
         app:srcCompat="@drawable/strangers_cover_art" />
 
     <TextView
         android:id="@+id/songTitle"
-        android:layout_width="@dimen/noPadding"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
@@ -58,7 +57,7 @@
 
     <TextView
         android:id="@+id/artists"
-        android:layout_width="@dimen/noPadding"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
@@ -72,10 +71,11 @@
 
     <TextView
         android:id="@+id/playCount"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:textSize="@dimen/textSmall"
+        android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/playButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -83,9 +83,11 @@
 
     <ImageButton
         android:id="@+id/playButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="@android:color/transparent"
+        app:layout_constraintDimensionRatio="1:1"
+        android:scaleType="centerInside"
         android:contentDescription="@string/play_desc"
         android:foreground="?android:attr/selectableItemBackground"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -96,9 +98,11 @@
 
     <ImageButton
         android:id="@+id/prevButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="@android:color/transparent"
+        app:layout_constraintDimensionRatio="1:1"
+        android:scaleType="centerInside"
         android:contentDescription="@string/prev_desc"
         android:foreground="?android:attr/selectableItemBackground"
         app:layout_constraintBottom_toBottomOf="@+id/playButton"
@@ -110,16 +114,17 @@
 
     <ImageButton
         android:id="@+id/nextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="@android:color/transparent"
+        android:scaleType="centerInside"
         android:contentDescription="@string/next_desc"
         android:foreground="?android:attr/selectableItemBackground"
         app:layout_constraintBottom_toBottomOf="@+id/playButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/playButton"
         app:layout_constraintTop_toTopOf="@+id/playButton"
-        app:srcCompat="@drawable/ic_next" />
+        android:src="@drawable/ic_next" />
 
     <EditText
         android:id="@+id/editText"
@@ -127,7 +132,6 @@
         android:layout_height="wrap_content"
         android:autofillHints="@string/autofill_hint"
         android:hint="@string/autofill_hint"
-        android:ems="10"
         android:inputType="textPersonName"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/userButton"
