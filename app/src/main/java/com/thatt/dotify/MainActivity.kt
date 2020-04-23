@@ -2,6 +2,7 @@ package com.thatt.dotify
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import com.ericchee.songdataprovider.Song
@@ -14,13 +15,25 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val song = intent.getParcelableExtra<Song>(SONG_KEY)
-        albumCover.setImageResource(song.largeImageID)
-        songTitle.text = song.title
-        artists.text = song.artist
+
+        // Display song information
+        val song: Song? = intent.getParcelableExtra(SONG_KEY)
+        if (song != null) {
+            albumCover.setImageResource(song.largeImageID)
+            songTitle.text = song.title
+            artists.text = song.artist
+        }
+
+        // Set initial play count
         plays = Random.nextInt(1000, 1000000)
         playCount.text = getString(R.string.play_count, plays)
+
+        // Set initial text color
         var changedColor = false
+
+        // Display back button on action bar
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         userButton.setOnClickListener {
             changeUser()
         }
@@ -40,10 +53,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Keys for Extras
     companion object {
         const val SONG_KEY = "SELECTED_SONG"
     }
 
+    // Ends activity
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        this.finish()
+        return super.onOptionsItemSelected(item)
+    }
+
+    // Lets user change username
     private fun changeUser() {
         if (userButton.text == getString(R.string.change_button)) {
             user.visibility = View.GONE
@@ -60,6 +81,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Changes color of text
     private fun changeColor(changedColor: Boolean) {
         if (!changedColor) {
             val colorRed = getColor(R.color.red)
@@ -80,11 +102,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Increase play count
     private fun incrementUp() {
         plays++
         playCount.text = getString(R.string.play_count, plays)
     }
 
+    // Skips to the next or previous song
     private fun skipTrack(track: String) {
         Toast.makeText(applicationContext, getString(R.string.skip_track, track), Toast.LENGTH_SHORT).show()
     }

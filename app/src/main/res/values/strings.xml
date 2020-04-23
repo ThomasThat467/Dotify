@@ -13,4 +13,7 @@
     <string name="play_desc">Play Button</string>
     <string name="default_title">Strangers</string>
     <string name="default_artist">Seven Lions featuring Tove Lo, Myon, Shane 54</string>
+    <string name="mini_player_button">Shuffle</string>
+    <string name="mini_player_text">%s - %s</string>
+    <string name="song_list_title">All Songs</string>
 </resources>

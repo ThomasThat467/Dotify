@@ -5,31 +5,45 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.ericchee.songdataprovider.Song
 import java.util.*
 
 class SongListAdapter(private val listOfSongs: List<Song>): RecyclerView.Adapter<SongListAdapter.SongViewHolder>() {
-    private val listOfSongsCopy = listOfSongs.toList()
+    private var listOfSongsCopy = listOfSongs.toMutableList() // Made copy so the original is not changed
     var onSongClickListener: ((song: Song) -> Unit)? = null
+    var onSongLongClickListener: ((title: String) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_song, parent, false)
-
         return SongViewHolder(view)
     }
 
     override fun getItemCount() = listOfSongsCopy.size
 
+    // Shuffles the songs
     fun shuffleSongs() {
-        Collections.shuffle(listOfSongsCopy)
+        val newList = listOfSongsCopy.toMutableList()
+        newList.shuffle()
+        updateChanges(listOfSongsCopy, newList)
+        listOfSongsCopy = newList
     }
 
+    // Animates changes to list
+    fun updateChanges(oldList: List<Song>, newList: List<Song>) {
+        val callback = SongDiffCallback(oldList, newList)
+        val diffResult = DiffUtil.calculateDiff(callback)
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+    // Displays items at specified positions
     override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
         val song = listOfSongsCopy[position]
         holder.bind(song)
     }
 
+    // Creates view for each item
     inner class SongViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         private val songAlbum = itemView.findViewById<ImageView>(R.id.albumImage)
         private val songName = itemView.findViewById<TextView>(R.id.songTitle)
@@ -40,8 +54,19 @@ class SongListAdapter(private val listOfSongs: List<Song>): RecyclerView.Adapter
             songName.text = song.title
             songArtist.text = song.artist
 
+            // Finds song that is clicked
             itemView.setOnClickListener {
                 onSongClickListener?.invoke(song)
+            }
+
+            // Removes song that is long clicked
+            itemView.setOnLongClickListener {
+                val newList = listOfSongsCopy.toMutableList()
+                newList.remove(song)
+                updateChanges(listOfSongsCopy, newList)
+                listOfSongsCopy = newList
+                onSongLongClickListener?.invoke(song.title)
+                return@setOnLongClickListener true
             }
         }
     }
