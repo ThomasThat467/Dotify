@@ -3,10 +3,9 @@ package com.thatt.dotify
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import com.ericchee.songdataprovider.Song
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_now_playing.*
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
@@ -14,7 +13,17 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.fragment_now_playing)
+
+        if (savedInstanceState != null) {
+            with(savedInstanceState) {
+                plays = getInt(PLAY_COUNT)
+            }
+        } else {
+            plays = Random.nextInt(1000, 1000000)
+        }
+
+        playCount.text = getString(R.string.play_count, plays)
 
         // Display song information
         val song: Song? = intent.getParcelableExtra(SONG_KEY)
@@ -24,19 +33,12 @@ class MainActivity : AppCompatActivity() {
             artists.text = song.artist
         }
 
-        // Set initial play count
-        plays = Random.nextInt(1000, 1000000)
-        playCount.text = getString(R.string.play_count, plays)
-
         // Set initial text color
         var changedColor = false
 
         // Display back button on action bar
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        userButton.setOnClickListener {
-            changeUser()
-        }
         albumCover.setOnLongClickListener() {
             changeColor(changedColor)
             changedColor = !changedColor
@@ -56,6 +58,13 @@ class MainActivity : AppCompatActivity() {
     // Keys for Extras
     companion object {
         const val SONG_KEY = "SELECTED_SONG"
+
+        private const val PLAY_COUNT = "play_count"
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(PLAY_COUNT, plays)
+        super.onSaveInstanceState(outState)
     }
 
     // Ends activity
@@ -64,38 +73,16 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    // Lets user change username
-    private fun changeUser() {
-        if (userButton.text == getString(R.string.change_button)) {
-            user.visibility = View.GONE
-            userButton.text = getString(R.string.apply_button)
-            editText.visibility = View.VISIBLE
-            editText.setText(user.text)
-        } else if (editText.text.toString().isEmpty()) {
-            Toast.makeText(applicationContext, getString(R.string.username_error), Toast.LENGTH_SHORT).show()
-        } else {
-            user.visibility = View.VISIBLE
-            userButton.text = getString(R.string.change_button)
-            editText.visibility = View.GONE
-            user.text = editText.text
-        }
-    }
 
     // Changes color of text
     private fun changeColor(changedColor: Boolean) {
         if (!changedColor) {
             val colorRed = getColor(R.color.red)
-            user.setTextColor(colorRed)
-            editText.setTextColor(colorRed)
-            userButton.setTextColor(colorRed)
             songTitle.setTextColor(colorRed)
             artists.setTextColor(colorRed)
             playCount.setTextColor(colorRed)
         } else {
             val colorBlack = getColor(R.color.black)
-            user.setTextColor(colorBlack)
-            editText.setTextColor(colorBlack)
-            userButton.setTextColor(colorBlack)
             songTitle.setTextColor(colorBlack)
             artists.setTextColor(colorBlack)
             playCount.setTextColor(colorBlack)
