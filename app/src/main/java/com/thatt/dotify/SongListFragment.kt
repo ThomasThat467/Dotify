@@ -17,6 +17,8 @@ class SongListFragment: Fragment() {
     companion object {
         val TAG: String = SongListFragment::class.java.simpleName
         const val ARG_LIST = "arg_list"
+        const val SAVED_LIST = "saved_list"
+//        const val SAVED_ADAPTER = "saved_adapter"
     }
 
     override fun onAttach(context: Context) {
@@ -31,6 +33,16 @@ class SongListFragment: Fragment() {
 
         if (context is OnSongClickListener) {
             onSongSelectedListener = context
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        if (savedInstanceState != null) {
+            with(savedInstanceState) {
+                songList = getParcelableArrayList<Song>(SAVED_LIST) as List<Song>
+            }
         }
     }
 
@@ -52,12 +64,28 @@ class SongListFragment: Fragment() {
             onSongSelectedListener?.onSongClicked(song)
         }
         songListAdapter.onSongLongClickListener = { title: String ->
-            onSongSelectedListener?.onSongLongClicked(title)
+            updateList()
+            onSongSelectedListener?.onSongLongClicked(title, getList())
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArrayList(SAVED_LIST, songList as ArrayList)
+//        outState.putParcelable(SAVED_ADAPTER, songListAdapter)
+        super.onSaveInstanceState(outState)
     }
 
     fun shuffleList() {
         songListAdapter.shuffleSongs()
+        updateList()
+    }
+
+    fun getList(): ArrayList<Song> {
+        return songListAdapter.listOfSongsCopy as ArrayList<Song>
+    }
+
+    fun updateList() {
+        songList = songListAdapter.listOfSongsCopy
     }
 
 }

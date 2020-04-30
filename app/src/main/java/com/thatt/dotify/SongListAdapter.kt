@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ericchee.songdataprovider.Song
 
 class SongListAdapter(private val listOfSongs: List<Song>): RecyclerView.Adapter<SongListAdapter.SongViewHolder>() {
-    private var listOfSongsCopy = listOfSongs.toMutableList() // Made copy so the original is not changed
+    var listOfSongsCopy = listOfSongs.toMutableList() // Made copy so the original is not changed
     var onSongClickListener: ((song: Song) -> Unit)? = null
     var onSongLongClickListener: ((title: String) -> Unit)? = null
 
