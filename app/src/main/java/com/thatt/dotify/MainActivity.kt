@@ -1,102 +1,110 @@
 package com.thatt.dotify
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.MenuItem
+import android.os.Parcelable
+import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.ericchee.songdataprovider.Song
-import kotlinx.android.synthetic.main.fragment_now_playing.*
-import kotlin.random.Random
+import com.ericchee.songdataprovider.SongDataProvider
+import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
-    private var plays = 0
+class MainActivity: AppCompatActivity(), OnSongClickListener {
+    private lateinit var selectedSong: Song
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment_now_playing)
+        setContentView(R.layout.activity_main)
 
-        if (savedInstanceState != null) {
-            with(savedInstanceState) {
-                plays = getInt(PLAY_COUNT)
+        val allSongs: ArrayList<Song> = SongDataProvider.getAllSongs() as ArrayList<Song>
+
+//        if (savedInstanceState != null) {
+//            with(savedInstanceState) {
+//                miniPlayerText.text = getString(MINI_TEXT)
+//            }
+//        }
+
+        val nowPlayingFragment = NowPlayingFragment()
+        val argumentBundle = Bundle().apply {
+            putParcelable(NowPlayingFragment.SELECTED_SONG, allSongs[0])
+        }
+        nowPlayingFragment.arguments = argumentBundle
+
+        if (supportFragmentManager.findFragmentByTag(NowPlayingFragment.TAG) == null) {
+            val songListFragment = SongListFragment()
+            shuffleButton.setOnClickListener {
+                shuffleSongs(songListFragment)
             }
-        } else {
-            plays = Random.nextInt(1000, 1000000)
+            val argumentBundle = Bundle().apply {
+                putParcelableArrayList(SongListFragment.ARG_LIST, allSongs)
+            }
+            songListFragment.arguments = argumentBundle
+            supportFragmentManager.beginTransaction().add(R.id.fragContainer, songListFragment).commit()
         }
 
-        playCount.text = getString(R.string.play_count, plays)
+        supportFragmentManager.addOnBackStackChangedListener {
+            val backStack = supportFragmentManager.backStackEntryCount > 0
 
-        // Display song information
-        val song: Song? = intent.getParcelableExtra(SONG_KEY)
-        if (song != null) {
-            albumCover.setImageResource(song.largeImageID)
-            songTitle.text = song.title
-            artists.text = song.artist
+            if (backStack) {
+                supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            } else {
+                supportActionBar?.setDisplayHomeAsUpEnabled(false)
+            }
         }
 
-        // Set initial text color
-        var changedColor = false
-
-        // Display back button on action bar
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        albumCover.setOnLongClickListener() {
-            changeColor(changedColor)
-            changedColor = !changedColor
-            return@setOnLongClickListener true
-        }
-        playButton.setOnClickListener {
-            incrementUp()
-        }
-        nextButton.setOnClickListener {
-            skipTrack("next")
-        }
-        prevButton.setOnClickListener {
-            skipTrack("previous")
+        miniPlayer.setOnClickListener {
+            onMiniPlayerClick()
         }
     }
 
-    // Keys for Extras
-    companion object {
-        const val SONG_KEY = "SELECTED_SONG"
+//    companion object {
+//        const val MINI_TEXT = "mini_text"
+//    }
 
-        private const val PLAY_COUNT = "play_count"
-    }
+//    override fun onSaveInstanceState(outState: Bundle) {
+//        outState.putString(MINI_TEXT, miniPlayerText.text.toString())
+//        super.onSaveInstanceState(outState)
+//    }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putInt(PLAY_COUNT, plays)
-        super.onSaveInstanceState(outState)
-    }
+    private fun getNowPlayingFragment() = supportFragmentManager.findFragmentByTag(NowPlayingFragment.TAG) as? NowPlayingFragment
 
-    // Ends activity
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        this.finish()
-        return super.onOptionsItemSelected(item)
-    }
+    private fun onMiniPlayerClick() {
+        if (miniPlayerText.text.isNotEmpty()) {
+            var nowPlayingFragment = getNowPlayingFragment()
 
-
-    // Changes color of text
-    private fun changeColor(changedColor: Boolean) {
-        if (!changedColor) {
-            val colorRed = getColor(R.color.red)
-            songTitle.setTextColor(colorRed)
-            artists.setTextColor(colorRed)
-            playCount.setTextColor(colorRed)
-        } else {
-            val colorBlack = getColor(R.color.black)
-            songTitle.setTextColor(colorBlack)
-            artists.setTextColor(colorBlack)
-            playCount.setTextColor(colorBlack)
+            if (nowPlayingFragment == null) {
+                miniPlayer.visibility = View.GONE
+                nowPlayingFragment = NowPlayingFragment.getInstance(selectedSong)
+                supportFragmentManager
+                    .beginTransaction()
+                    .add(R.id.fragContainer, nowPlayingFragment, NowPlayingFragment.TAG)
+                    .addToBackStack(NowPlayingFragment.TAG)
+                    .commit()
+            } else {
+                nowPlayingFragment.updateSong(selectedSong)
+            }
         }
     }
 
-    // Increase play count
-    private fun incrementUp() {
-        plays++
-        playCount.text = getString(R.string.play_count, plays)
+    private fun shuffleSongs(songListFragment: SongListFragment) {
+        songListFragment.shuffleSongs()
     }
 
-    // Skips to the next or previous song
-    private fun skipTrack(track: String) {
-        Toast.makeText(applicationContext, getString(R.string.skip_track, track), Toast.LENGTH_SHORT).show()
+    override fun onSupportNavigateUp(): Boolean {
+        supportFragmentManager.popBackStack()
+        miniPlayer.visibility = View.VISIBLE
+        return super.onSupportNavigateUp()
     }
+
+    override fun onSongClicked(song: Song) {
+        miniPlayerText.visibility = View.VISIBLE
+        miniPlayerText.text = getString(R.string.mini_player_text, song.title, song.artist)
+        selectedSong = song
+    }
+
+    override fun onSongLongClicked(title: String) {
+        val deletedToast = Toast.makeText(applicationContext, "\"$title\" Deleted", Toast.LENGTH_LONG)
+        deletedToast.show()
+    }
+
 }

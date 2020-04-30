@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/paddingMedium"
-    tools:context=".MainActivity">
+    tools:context=".NowPlayingActivity">
 
     <ImageView
         android:id="@+id/albumCover"
@@ -63,11 +63,11 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@android:color/transparent"
-        app:layout_constraintDimensionRatio="1:1"
-        android:scaleType="centerInside"
         android:contentDescription="@string/play_desc"
         android:foreground="?android:attr/selectableItemBackground"
+        android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toStartOf="@+id/nextButton"
         app:layout_constraintStart_toEndOf="@+id/prevButton"
         app:layout_constraintTop_toBottomOf="@+id/playCount"
