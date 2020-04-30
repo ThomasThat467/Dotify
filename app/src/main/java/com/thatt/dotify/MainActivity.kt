@@ -18,28 +18,28 @@ class MainActivity: AppCompatActivity(), OnSongClickListener {
 
         val allSongs: ArrayList<Song> = SongDataProvider.getAllSongs() as ArrayList<Song>
 
-//        if (savedInstanceState != null) {
-//            with(savedInstanceState) {
-//                miniPlayerText.text = getString(MINI_TEXT)
-//            }
-//        }
-
-        val nowPlayingFragment = NowPlayingFragment()
-        val argumentBundle = Bundle().apply {
-            putParcelable(NowPlayingFragment.SELECTED_SONG, allSongs[0])
+        if (savedInstanceState != null) {
+            with(savedInstanceState) {
+                miniPlayerText.text = getString(MINI_TEXT)
+                if (getBoolean(BACK_BAR)) {
+                    supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                }
+                if (getBoolean(HIDE_MINI)) {
+                    miniPlayer.visibility = View.GONE
+                }
+            }
         }
-        nowPlayingFragment.arguments = argumentBundle
-
         if (supportFragmentManager.findFragmentByTag(NowPlayingFragment.TAG) == null) {
             val songListFragment = SongListFragment()
             shuffleButton.setOnClickListener {
-                shuffleSongs(songListFragment)
+                songListFragment.shuffleList()
             }
             val argumentBundle = Bundle().apply {
                 putParcelableArrayList(SongListFragment.ARG_LIST, allSongs)
             }
             songListFragment.arguments = argumentBundle
-            supportFragmentManager.beginTransaction().add(R.id.fragContainer, songListFragment).commit()
+            supportFragmentManager.beginTransaction().add(R.id.fragContainer, songListFragment)
+                .commit()
         }
 
         supportFragmentManager.addOnBackStackChangedListener {
@@ -57,14 +57,18 @@ class MainActivity: AppCompatActivity(), OnSongClickListener {
         }
     }
 
-//    companion object {
-//        const val MINI_TEXT = "mini_text"
-//    }
+    companion object {
+        const val MINI_TEXT = "mini_text"
+        const val BACK_BAR = "back_bar"
+        const val HIDE_MINI = "hide_mini"
+    }
 
-//    override fun onSaveInstanceState(outState: Bundle) {
-//        outState.putString(MINI_TEXT, miniPlayerText.text.toString())
-//        super.onSaveInstanceState(outState)
-//    }
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString(MINI_TEXT, miniPlayerText.text.toString())
+        outState.putBoolean(BACK_BAR, supportFragmentManager.backStackEntryCount > 0)
+        outState.putBoolean(HIDE_MINI, miniPlayer.visibility == View.GONE)
+        super.onSaveInstanceState(outState)
+    }
 
     private fun getNowPlayingFragment() = supportFragmentManager.findFragmentByTag(NowPlayingFragment.TAG) as? NowPlayingFragment
 
@@ -77,17 +81,13 @@ class MainActivity: AppCompatActivity(), OnSongClickListener {
                 nowPlayingFragment = NowPlayingFragment.getInstance(selectedSong)
                 supportFragmentManager
                     .beginTransaction()
-                    .add(R.id.fragContainer, nowPlayingFragment, NowPlayingFragment.TAG)
+                    .replace(R.id.fragContainer, nowPlayingFragment)
                     .addToBackStack(NowPlayingFragment.TAG)
                     .commit()
             } else {
                 nowPlayingFragment.updateSong(selectedSong)
             }
         }
-    }
-
-    private fun shuffleSongs(songListFragment: SongListFragment) {
-        songListFragment.shuffleSongs()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -105,6 +105,10 @@ class MainActivity: AppCompatActivity(), OnSongClickListener {
     override fun onSongLongClicked(title: String) {
         val deletedToast = Toast.makeText(applicationContext, "\"$title\" Deleted", Toast.LENGTH_LONG)
         deletedToast.show()
+    }
+
+    private fun skipTrack(track: String) {
+        Toast.makeText(applicationContext, getString(R.string.skip_track, track), Toast.LENGTH_SHORT).show()
     }
 
 }

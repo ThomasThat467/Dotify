@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.ericchee.songdataprovider.Song
 import kotlinx.android.synthetic.main.fragment_now_playing.*
@@ -35,10 +36,6 @@ class NowPlayingFragment: Fragment() {
         } else {
             plays = Random.nextInt(1000, 1000000)
         }
-
-//        playButton.setOnClickListener {
-//            incrementUp()
-//        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -64,16 +61,31 @@ class NowPlayingFragment: Fragment() {
         }
 
         song?.let { updateSong(it) }
+
+        playButton.setOnClickListener {
+            incrementUp()
+        }
+        nextButton.setOnClickListener {
+            skipTrack("next")
+        }
+        prevButton.setOnClickListener {
+            skipTrack("previous")
+        }
     }
 
     fun updateSong(song: Song) {
         albumCover.setImageResource(song.largeImageID)
         songTitle.text = song.title
         artists.text = song.artist
+        playCount.text = getString(R.string.play_count, plays)
     }
 
     private fun incrementUp() {
         plays++
         playCount.text = getString(R.string.play_count, plays)
+    }
+
+    private fun skipTrack(track: String) {
+        Toast.makeText(context?.applicationContext, getString(R.string.skip_track, track), Toast.LENGTH_SHORT).show()
     }
 }
