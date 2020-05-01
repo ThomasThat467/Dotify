@@ -92,12 +92,7 @@ class MainActivity: AppCompatActivity(), OnSongClickListener {
     // Enables back button on music player view
     private fun enableBackButton() {
         val backStack = supportFragmentManager.backStackEntryCount > 0
-
-        if (backStack) {
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        } else {
-            supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        }
+        supportActionBar?.setDisplayHomeAsUpEnabled(backStack)
     }
 
     // Shuffles the song list
