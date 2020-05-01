@@ -18,16 +18,14 @@ class SongListFragment: Fragment() {
         val TAG: String = SongListFragment::class.java.simpleName
         const val ARG_LIST = "arg_list"
         const val SAVED_LIST = "saved_list"
-//        const val SAVED_ADAPTER = "saved_adapter"
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
         arguments?.let { args ->
-            val listOfSongs = args.getParcelableArrayList<Song>(ARG_LIST)
-            if (listOfSongs != null) {
-                songList = listOfSongs
+            args.getParcelableArrayList<Song>(ARG_LIST)?.let {
+                songList = it
             }
         }
 
@@ -46,11 +44,7 @@ class SongListFragment: Fragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return layoutInflater.inflate(R.layout.fragment_song_list, container, false)
     }
 
@@ -71,20 +65,22 @@ class SongListFragment: Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList(SAVED_LIST, songList as ArrayList)
-//        outState.putParcelable(SAVED_ADAPTER, songListAdapter)
         super.onSaveInstanceState(outState)
     }
 
+    // Shuffles the song list
     fun shuffleList() {
         songListAdapter.shuffleSongs()
         updateList()
     }
 
-    fun getList(): ArrayList<Song> {
+    // Gets current list
+    private fun getList(): ArrayList<Song> {
         return songListAdapter.listOfSongsCopy as ArrayList<Song>
     }
 
-    fun updateList() {
+    // Updates list in fragment to current list in adapter
+    private fun updateList() {
         songList = songListAdapter.listOfSongsCopy
     }
 

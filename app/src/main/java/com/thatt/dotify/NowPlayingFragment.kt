@@ -11,7 +11,6 @@ import kotlinx.android.synthetic.main.fragment_now_playing.*
 import kotlin.random.Random
 
 class NowPlayingFragment: Fragment() {
-    private var song: Song? = null
     private var plays = 0
 
     companion object {
@@ -43,11 +42,7 @@ class NowPlayingFragment: Fragment() {
         super.onSaveInstanceState(outState)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_now_playing, container, false)
     }
 
@@ -56,11 +51,9 @@ class NowPlayingFragment: Fragment() {
 
         arguments?.let { args ->
             args.getParcelable<Song>(SELECTED_SONG)?.let {
-                song = it
+                updateSong(it)
             }
         }
-
-        song?.let { updateSong(it) }
 
         playButton.setOnClickListener {
             incrementUp()
@@ -73,18 +66,21 @@ class NowPlayingFragment: Fragment() {
         }
     }
 
-    fun updateSong(song: Song) {
+    // Changes information to current song
+    private fun updateSong(song: Song) {
         albumCover.setImageResource(song.largeImageID)
         songTitle.text = song.title
         artists.text = song.artist
         playCount.text = getString(R.string.play_count, plays)
     }
 
+    // Increase play count
     private fun incrementUp() {
         plays++
         playCount.text = getString(R.string.play_count, plays)
     }
 
+    // Skips to the next or previous song
     private fun skipTrack(track: String) {
         Toast.makeText(context?.applicationContext, getString(R.string.skip_track, track), Toast.LENGTH_SHORT).show()
     }
