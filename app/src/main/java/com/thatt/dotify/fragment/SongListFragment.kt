@@ -1,4 +1,4 @@
-package com.thatt.dotify
+package com.thatt.dotify.fragment
 
 import android.content.Context
 import android.os.Bundle
@@ -6,7 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.ericchee.songdataprovider.Song
+import com.thatt.dotify.model.Song
+import com.thatt.dotify.OnSongClickListener
+import com.thatt.dotify.R
+import com.thatt.dotify.SongListAdapter
 import kotlinx.android.synthetic.main.fragment_song_list.*
 
 class SongListFragment: Fragment() {
@@ -71,6 +74,11 @@ class SongListFragment: Fragment() {
     // Shuffles the song list
     fun shuffleList() {
         songListAdapter.shuffleSongs()
+        updateList()
+    }
+
+    fun changeList(newList: List<Song>) {
+        songListAdapter.updateChanges(newList)
         updateList()
     }
 

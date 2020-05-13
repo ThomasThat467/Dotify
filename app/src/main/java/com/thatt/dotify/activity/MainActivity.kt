@@ -1,17 +1,23 @@
-package com.thatt.dotify
+package com.thatt.dotify.activity
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.ericchee.songdataprovider.Song
-import com.ericchee.songdataprovider.SongDataProvider
+import com.thatt.dotify.model.Song
+import com.thatt.dotify.DotifyApp
+import com.thatt.dotify.OnSongClickListener
+import com.thatt.dotify.R
+import com.thatt.dotify.fragment.NowPlayingFragment
+import com.thatt.dotify.fragment.SongListFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity: AppCompatActivity(), OnSongClickListener {
     private lateinit var selectedSong: Song
 
     companion object {
+        const val TAG = "MainActivity"
         const val SELECT_SONG = "select_song"
         const val MINI_TEXT = "mini_text"
         const val BACK_BAR = "back_bar"
@@ -22,16 +28,35 @@ class MainActivity: AppCompatActivity(), OnSongClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val allSongs = SongDataProvider.getAllSongs() as ArrayList<Song>
+        val apiManager = DotifyApp().apiManager
+        var allSongs: List<Song> = ArrayList()
+        apiManager.fetchSongs(
+            this,
+            { it ->
+                Log.i(TAG, it.toString())
+                changeList(it.songs)
+            },
+            {
+                Toast.makeText(this, "Could not find songs", Toast.LENGTH_LONG)
+            }
+        )
+
+        if (apiManager.songList != null) {
+            allSongs = apiManager.songList!!.songs
+        }
 
         if (savedInstanceState != null) {
             restoreState(savedInstanceState)
         } else {
-            selectedSong = allSongs[0]
+            if (allSongs.isNotEmpty()) {
+                selectedSong = allSongs[0]
+            } else {
+                selectedSong = Song("1", "testTitle", "testArtist", "testSmallID", "testLargeID")
+            }
         }
 
         if (getNowPlayingFragment() == null && getSongListFragment() == null) {
-            addListFragment(allSongs)
+            addListFragment(allSongs as ArrayList<Song>)
         }
 
         supportFragmentManager.addOnBackStackChangedListener {
@@ -71,7 +96,8 @@ class MainActivity: AppCompatActivity(), OnSongClickListener {
     }
 
     // Now Playing fragment reference
-    private fun getNowPlayingFragment() = supportFragmentManager.findFragmentByTag(NowPlayingFragment.TAG) as? NowPlayingFragment
+    private fun getNowPlayingFragment() = supportFragmentManager.findFragmentByTag(
+        NowPlayingFragment.TAG) as? NowPlayingFragment
 
     // Song List fragment reference
     private fun getSongListFragment() = supportFragmentManager.findFragmentByTag(SongListFragment.TAG) as? SongListFragment
@@ -99,6 +125,11 @@ class MainActivity: AppCompatActivity(), OnSongClickListener {
     private fun shuffleList() {
         val fragment = getSongListFragment()
         fragment?.shuffleList()
+    }
+
+    private fun changeList(newList: List<Song>) {
+        val fragment = getSongListFragment()
+        fragment?.changeList(newList)
     }
 
     // Go to large player

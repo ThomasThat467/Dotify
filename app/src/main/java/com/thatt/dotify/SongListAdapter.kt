@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.ericchee.songdataprovider.Song
+import com.thatt.dotify.model.Song
 
 class SongListAdapter(private val listOfSongs: List<Song>): RecyclerView.Adapter<SongListAdapter.SongViewHolder>() {
     var listOfSongsCopy = listOfSongs.toMutableList() // Made copy so the original is not changed
@@ -27,6 +27,10 @@ class SongListAdapter(private val listOfSongs: List<Song>): RecyclerView.Adapter
         newList.shuffle()
         updateChanges(listOfSongsCopy, newList)
         listOfSongsCopy = newList
+    }
+
+    fun updateChanges(newList: List<Song>) {
+        updateChanges(listOfSongsCopy, newList)
     }
 
     // Animates changes to list
@@ -49,7 +53,7 @@ class SongListAdapter(private val listOfSongs: List<Song>): RecyclerView.Adapter
         private val songArtist = itemView.findViewById<TextView>(R.id.artist)
 
         fun bind(song: Song) {
-            songAlbum.setImageResource(song.smallImageID)
+            //songAlbum.setImageResource(song.smallImageID)
             songName.text = song.title
             songArtist.text = song.artist
 

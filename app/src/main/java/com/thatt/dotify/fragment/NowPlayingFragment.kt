@@ -1,4 +1,4 @@
-package com.thatt.dotify
+package com.thatt.dotify.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.ericchee.songdataprovider.Song
+import com.thatt.dotify.model.Song
+import com.thatt.dotify.R
 import kotlinx.android.synthetic.main.fragment_now_playing.*
 import kotlin.random.Random
 
@@ -68,7 +69,7 @@ class NowPlayingFragment: Fragment() {
 
     // Changes information to current song
     private fun updateSong(song: Song) {
-        albumCover.setImageResource(song.largeImageID)
+        //albumCover.setImageResource(song.largeImageID)
         songTitle.text = song.title
         artists.text = song.artist
         playCount.text = getString(R.string.play_count, plays)
