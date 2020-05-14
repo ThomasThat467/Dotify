@@ -8,4 +8,4 @@ There is no extra credit
 
 ## Screenshots
 
-<image alt="Dotify Screenshot" src="./Screenshot/app_screenshot_3.png" height="500" />
+<image alt="Dotify Screenshot" src="./Screenshot/app_screenshot_4.png" height="500" />
