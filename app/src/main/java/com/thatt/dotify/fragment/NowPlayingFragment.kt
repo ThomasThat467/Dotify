@@ -20,7 +20,7 @@ class NowPlayingFragment: Fragment() {
         const val SELECTED_SONG = "selected_song"
         private const val PLAY_COUNT = "play_count"
 
-        fun getInstance(song: Song) = NowPlayingFragment().apply {
+        fun getInstance(song: Song?) = NowPlayingFragment().apply {
             arguments = Bundle().apply {
                 putParcelable(SELECTED_SONG, song)
             }

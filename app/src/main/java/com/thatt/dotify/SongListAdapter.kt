@@ -26,20 +26,15 @@ class SongListAdapter(private val listOfSongs: List<Song>): RecyclerView.Adapter
     fun shuffleSongs() {
         val newList = listOfSongsCopy.toMutableList()
         newList.shuffle()
-        updateChanges(listOfSongsCopy, newList)
-        listOfSongsCopy = newList
-    }
-
-    fun updateChanges(newList: List<Song>) {
-        updateChanges(listOfSongsCopy, newList)
-        listOfSongsCopy = newList.toMutableList()
+        updateChanges(newList)
     }
 
     // Animates changes to list
-    fun updateChanges(oldList: List<Song>, newList: List<Song>) {
-        val callback = SongDiffCallback(oldList, newList)
+    fun updateChanges(newList: List<Song>) {
+        val callback = SongDiffCallback(listOfSongsCopy, newList)
         val diffResult = DiffUtil.calculateDiff(callback)
         diffResult.dispatchUpdatesTo(this)
+        listOfSongsCopy = newList.toMutableList()
     }
 
     // Displays items at specified positions
@@ -68,7 +63,7 @@ class SongListAdapter(private val listOfSongs: List<Song>): RecyclerView.Adapter
             itemView.setOnLongClickListener {
                 val newList = listOfSongsCopy.toMutableList()
                 newList.remove(song)
-                updateChanges(listOfSongsCopy, newList)
+                updateChanges(newList)
                 listOfSongsCopy = newList
                 onSongLongClickListener?.invoke(song.title)
                 return@setOnLongClickListener true

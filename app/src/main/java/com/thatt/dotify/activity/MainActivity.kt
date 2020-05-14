@@ -11,14 +11,12 @@ import com.thatt.dotify.OnSongClickListener
 import com.thatt.dotify.R
 import com.thatt.dotify.fragment.NowPlayingFragment
 import com.thatt.dotify.fragment.SongListFragment
+import com.thatt.dotify.manager.ApiManager
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity: AppCompatActivity(), OnSongClickListener {
-    private var selectedSong: Song? = null
 
     companion object {
-        const val TAG = "MainActivity"
-        const val SELECT_SONG = "select_song"
         const val MINI_TEXT = "mini_text"
         const val BACK_BAR = "back_bar"
         const val HIDE_MINI = "hide_mini"
@@ -29,24 +27,13 @@ class MainActivity: AppCompatActivity(), OnSongClickListener {
         setContentView(R.layout.activity_main)
 
         val apiManager = (application as DotifyApp).apiManager
-        var allSongs: List<Song> = ArrayList()
+        val allSongs: List<Song> = ArrayList()
 
 
         if (savedInstanceState != null) {
             restoreState(savedInstanceState)
         } else {
-            apiManager.fetchSongs(
-                { it ->
-                    Log.i(TAG, it.toString())
-                    changeList(it.songs)
-                },
-                {
-                    Toast.makeText(this, "Could not find songs", Toast.LENGTH_LONG).show()
-                }
-            )
-            if (allSongs.isNotEmpty()) {
-                selectedSong = allSongs[0]
-            }
+            fetchSongData(apiManager)
         }
 
         if (getNowPlayingFragment() == null && getSongListFragment() == null) {
@@ -65,7 +52,6 @@ class MainActivity: AppCompatActivity(), OnSongClickListener {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelable(SELECT_SONG, selectedSong)
         outState.putString(MINI_TEXT, miniPlayerText.text.toString())
         outState.putBoolean(BACK_BAR, supportFragmentManager.backStackEntryCount > 0)
         outState.putBoolean(HIDE_MINI, miniPlayer.visibility == View.GONE)
@@ -75,10 +61,6 @@ class MainActivity: AppCompatActivity(), OnSongClickListener {
     // Restore current view's state
     private fun restoreState(savedInstanceState: Bundle) {
         with(savedInstanceState) {
-            val previousSong = getParcelable<Song>(SELECT_SONG)
-            if (previousSong != null) {
-                selectedSong = previousSong
-            }
             miniPlayerText.text = getString(MINI_TEXT)
             if (getBoolean(BACK_BAR)) {
                 supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -89,12 +71,23 @@ class MainActivity: AppCompatActivity(), OnSongClickListener {
         }
     }
 
+    // Fetches the list of songs
+    private fun fetchSongData(apiManager: ApiManager) {
+        apiManager.fetchSongs(
+            {changeList(it.songs)},
+            {Toast.makeText(this, "Could not find songs", Toast.LENGTH_LONG).show()}
+        )
+    }
+
     // Now Playing fragment reference
     private fun getNowPlayingFragment() = supportFragmentManager.findFragmentByTag(
         NowPlayingFragment.TAG) as? NowPlayingFragment
 
     // Song List fragment reference
     private fun getSongListFragment() = supportFragmentManager.findFragmentByTag(SongListFragment.TAG) as? SongListFragment
+
+    // Music Manager reference
+    private fun getMusicManager() = (application as DotifyApp).musicManager
 
     // Adds song list fragment to fragment manager
     private fun addListFragment(allSongs: ArrayList<Song>) {
@@ -121,6 +114,7 @@ class MainActivity: AppCompatActivity(), OnSongClickListener {
         fragment?.shuffleList()
     }
 
+    // Changes the current list to new one
     private fun changeList(newList: List<Song>) {
         val fragment = getSongListFragment()
         fragment?.changeList(newList)
@@ -128,12 +122,12 @@ class MainActivity: AppCompatActivity(), OnSongClickListener {
 
     // Go to large player
     private fun onMiniPlayerClick() {
-        if (selectedSong != null) {
+        if (getMusicManager().getCurrentSong() != null) {
             var nowPlayingFragment = getNowPlayingFragment()
 
             if (nowPlayingFragment == null) {
                 miniPlayer.visibility = View.GONE
-                nowPlayingFragment = NowPlayingFragment.getInstance(selectedSong!!)
+                nowPlayingFragment = NowPlayingFragment.getInstance(getMusicManager().getCurrentSong())
                 supportFragmentManager
                     .beginTransaction()
                     .add(R.id.fragContainer, nowPlayingFragment, NowPlayingFragment.TAG)
@@ -161,7 +155,6 @@ class MainActivity: AppCompatActivity(), OnSongClickListener {
         miniPlayerText.visibility = View.VISIBLE
         (application as DotifyApp).musicManager.changeSong(song)
         miniPlayerText.text = getString(R.string.mini_player_text, song.title, song.artist)
-        selectedSong = song
     }
 
     // Displays message about which song has been deleted

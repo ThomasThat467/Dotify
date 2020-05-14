@@ -3,12 +3,10 @@ package com.thatt.dotify.manager
 import android.content.Context
 import android.util.Log
 import com.android.volley.Request
-import com.android.volley.RequestQueue
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
 import com.thatt.dotify.fragment.SongListFragment.Companion.TAG
-import com.thatt.dotify.model.Song
 import com.thatt.dotify.model.SongList
 
 class ApiManager(context: Context) {
