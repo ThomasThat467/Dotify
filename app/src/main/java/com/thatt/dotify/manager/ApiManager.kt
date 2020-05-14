@@ -11,11 +11,10 @@ import com.thatt.dotify.fragment.SongListFragment.Companion.TAG
 import com.thatt.dotify.model.Song
 import com.thatt.dotify.model.SongList
 
-class ApiManager {
-    var songList: SongList? = null
+class ApiManager(context: Context) {
+    private val queue = Volley.newRequestQueue(context)
 
-    fun fetchSongs(context: Context, initSongList: (SongList) -> Unit, onError: (() -> Unit)? = null) {
-        val queue = Volley.newRequestQueue(context)
+    fun fetchSongs(initSongList: (SongList) -> Unit, onError: (() -> Unit)? = null) {
         val songListURL = "https://raw.githubusercontent.com/echeeUW/codesnippets/master/musiclibrary.json"
 
         val request = StringRequest(
@@ -24,7 +23,6 @@ class ApiManager {
                 val gson = Gson()
                 val allSongs = gson.fromJson(response, SongList::class.java)
 
-                songList = allSongs
                 initSongList(allSongs)
             },
             {

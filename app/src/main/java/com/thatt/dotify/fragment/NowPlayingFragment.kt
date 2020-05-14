@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.squareup.picasso.Picasso
 import com.thatt.dotify.model.Song
 import com.thatt.dotify.R
 import kotlinx.android.synthetic.main.fragment_now_playing.*
@@ -69,7 +70,7 @@ class NowPlayingFragment: Fragment() {
 
     // Changes information to current song
     private fun updateSong(song: Song) {
-        //albumCover.setImageResource(song.largeImageID)
+        Picasso.get().load(song.largeImageURL).into(albumCover)
         songTitle.text = song.title
         artists.text = song.artist
         playCount.text = getString(R.string.play_count, plays)

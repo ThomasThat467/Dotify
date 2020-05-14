@@ -14,7 +14,7 @@ import com.thatt.dotify.fragment.SongListFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity: AppCompatActivity(), OnSongClickListener {
-    private lateinit var selectedSong: Song
+    private var selectedSong: Song? = null
 
     companion object {
         const val TAG = "MainActivity"
@@ -28,30 +28,24 @@ class MainActivity: AppCompatActivity(), OnSongClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val apiManager = DotifyApp().apiManager
+        val apiManager = (application as DotifyApp).apiManager
         var allSongs: List<Song> = ArrayList()
-        apiManager.fetchSongs(
-            this,
-            { it ->
-                Log.i(TAG, it.toString())
-                changeList(it.songs)
-            },
-            {
-                Toast.makeText(this, "Could not find songs", Toast.LENGTH_LONG)
-            }
-        )
 
-        if (apiManager.songList != null) {
-            allSongs = apiManager.songList!!.songs
-        }
 
         if (savedInstanceState != null) {
             restoreState(savedInstanceState)
         } else {
+            apiManager.fetchSongs(
+                { it ->
+                    Log.i(TAG, it.toString())
+                    changeList(it.songs)
+                },
+                {
+                    Toast.makeText(this, "Could not find songs", Toast.LENGTH_LONG).show()
+                }
+            )
             if (allSongs.isNotEmpty()) {
                 selectedSong = allSongs[0]
-            } else {
-                selectedSong = Song("1", "testTitle", "testArtist", "testSmallID", "testLargeID")
             }
         }
 
@@ -134,12 +128,12 @@ class MainActivity: AppCompatActivity(), OnSongClickListener {
 
     // Go to large player
     private fun onMiniPlayerClick() {
-        if (miniPlayerText.text.isNotEmpty()) {
+        if (selectedSong != null) {
             var nowPlayingFragment = getNowPlayingFragment()
 
             if (nowPlayingFragment == null) {
                 miniPlayer.visibility = View.GONE
-                nowPlayingFragment = NowPlayingFragment.getInstance(selectedSong)
+                nowPlayingFragment = NowPlayingFragment.getInstance(selectedSong!!)
                 supportFragmentManager
                     .beginTransaction()
                     .add(R.id.fragContainer, nowPlayingFragment, NowPlayingFragment.TAG)
@@ -165,6 +159,7 @@ class MainActivity: AppCompatActivity(), OnSongClickListener {
     // Changes text on the mini player
     override fun onSongClicked(song: Song) {
         miniPlayerText.visibility = View.VISIBLE
+        (application as DotifyApp).musicManager.changeSong(song)
         miniPlayerText.text = getString(R.string.mini_player_text, song.title, song.artist)
         selectedSong = song
     }

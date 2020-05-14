@@ -5,6 +5,13 @@ import com.thatt.dotify.manager.ApiManager
 import com.thatt.dotify.manager.MusicManager
 
 class DotifyApp: Application() {
-    var musicManager: MusicManager = MusicManager()
-    var apiManager: ApiManager = ApiManager()
+    lateinit var musicManager: MusicManager
+    lateinit var apiManager: ApiManager
+
+    override fun onCreate() {
+        super.onCreate()
+
+        musicManager = MusicManager()
+        apiManager = ApiManager(this)
+    }
 }

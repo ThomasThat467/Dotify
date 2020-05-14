@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import com.thatt.dotify.model.Song
 
 class SongListAdapter(private val listOfSongs: List<Song>): RecyclerView.Adapter<SongListAdapter.SongViewHolder>() {
@@ -31,6 +32,7 @@ class SongListAdapter(private val listOfSongs: List<Song>): RecyclerView.Adapter
 
     fun updateChanges(newList: List<Song>) {
         updateChanges(listOfSongsCopy, newList)
+        listOfSongsCopy = newList.toMutableList()
     }
 
     // Animates changes to list
@@ -53,7 +55,7 @@ class SongListAdapter(private val listOfSongs: List<Song>): RecyclerView.Adapter
         private val songArtist = itemView.findViewById<TextView>(R.id.artist)
 
         fun bind(song: Song) {
-            //songAlbum.setImageResource(song.smallImageID)
+            Picasso.get().load(song.smallImageURL).into(songAlbum)
             songName.text = song.title
             songArtist.text = song.artist
 
